@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轻小说资源库 - 现代大气版</title>
+    <style>
+        :root {
+            --primary-color: #3b82f6; /* 现代科技蓝 */
+            --accent-color: #6366f1;
+            --bg-color: #fcfdfe;
+            --text-main: #1e293b;
+            --text-muted: #94a3b8;
+            --card-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 4px 10px -5px rgba(0, 0, 0, 0.02);
+            --hover-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', 'PingFang SC', 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0; padding: 60px 20px;
+            color: var(--text-main);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 1000px; /* 黄金视觉宽度 */
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: left; /* 改为左对齐，更有设计感 */
+            margin-bottom: 50px;
+            padding-left: 20px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        header h1 {
+            font-size: 2.8rem; /* 超大标题 */
+            font-weight: 800;
+            margin: 0;
+            background: linear-gradient(to right, #1e293b, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        header p { color: var(--text-muted); font-size: 1.1rem; margin-top: 10px; }
+
+        /* 搜索框：现代浮动感 */
+        .search-box { margin-bottom: 40px; }
+        #searchInput {
+            width: 100%; box-sizing: border-box;
+            padding: 20px 30px; font-size: 1.2rem;
+            border: 1px solid #eef2f6; border-radius: 20px;
+            background: white; outline: none;
+            box-shadow: var(--card-shadow);
+            transition: all 0.3s ease;
+        }
+        #searchInput:focus {
+            box-shadow: var(--hover-shadow);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
+
+        /* 列表项设计：取消表格，改用大气卡片 */
+        .item-list { display: flex; flex-direction: column; gap: 20px; }
+
+        .book-card {
+            background: white; border-radius: 24px;
+            padding: 25px 40px;
+            display: flex; align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--card-shadow);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            border: 1px solid rgba(255,255,255,0);
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px) scale(1.01);
+            box-shadow: var(--hover-shadow);
+            border-color: #dbeafe;
+        }
+
+        .book-info { flex: 1; }
+        .book-id { 
+            font-size: 0.9rem; font-weight: 700; color: var(--primary-color); 
+            background: #eff6ff; padding: 4px 12px; border-radius: 8px;
+            display: inline-block; margin-bottom: 12px;
+        }
+        .book-name { font-size: 1.6rem; font-weight: 800; margin: 0; color: #0f172a; }
+        .book-meta { margin-top: 10px; font-size: 1rem; color: var(--text-muted); display: flex; gap: 20px; }
+        .meta-item b { color: var(--text-main); }
+
+        .book-actions { display: flex; gap: 15px; align-items: center; }
+
+        /* 按钮：现代圆润感 */
+        .btn {
+            padding: 14px 28px; border-radius: 16px; font-weight: 700;
+            font-size: 1rem; cursor: pointer; border: none; transition: 0.3s;
+            text-decoration: none; display: inline-flex; align-items: center;
+        }
+        .btn-full { background: var(--primary-color); color: white; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3); }
+        .btn-full:hover { background: #2563eb; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4); }
+        
+        .btn-sub { background: #f8fafc; color: var(--text-main); border: 1px solid #e2e8f0; }
+        .btn-sub:hover { background: #f1f5f9; border-color: #cbd5e1; }
+
+        /* 分页器 */
+        .pagination { display: flex; justify-content: center; margin-top: 50px; gap: 10px; }
+        .page-btn {
+            padding: 12px 20px; border-radius: 12px; border: none;
+            background: white; color: var(--text-muted); font-weight: 700;
+            cursor: pointer; box-shadow: var(--card-shadow); transition: 0.3s;
+        }
+        .page-btn.active { background: var(--primary-color); color: white; }
+        .page-btn:hover:not(.active) { transform: translateY(-3px); color: var(--primary-color); }
+
+        /* 弹窗：炫酷磨砂 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.3); backdrop-filter: blur(12px);
+            display: none; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal { 
+            background: rgba(255, 255, 255, 0.95); width: 90%; max-width: 550px; 
+            border-radius: 30px; padding: 40px; position: relative;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.12);
+        }
+        .close-btn { position: absolute; top: 30px; right: 30px; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+        
+        .vol-item { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 25px; background: white; 
+            margin-bottom: 12px; border-radius: 18px; 
+            border: 1px solid #f1f5f9; cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .vol-item:hover { background: var(--primary-color); border-color: var(--primary-color); transform: scale(1.02); }
+        .vol-item:hover .vol-name, .vol-item:hover .vol-dl { color: white; }
+        .vol-name { font-weight: 700; font-size: 1.1rem; color: var(--text-main); }
+        .vol-dl { color: var(--primary-color); font-weight: 800; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>轻小说下载中心</h1>
+        <p>探索、发现并获取您的专属数字藏书</p>
+    </header>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="搜索作品名称或作者...">
+    </div>
+
+    <div class="item-list" id="itemList">
+        <!-- 动态加载卡片 -->
+    </div>
+
+    <div class="pagination" id="mainPagination"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h2 id="modalTitle" style="margin-top:0; font-size: 1.8rem; font-weight: 800; margin-bottom: 25px;">分卷列表</h2>
+        <div id="volList"></div>
+        <div class="pagination" id="volPagination"></div>
+    </div>
+</div>
+
+<script>
+    let allData = [];
+    let filteredData = [];
+    let currentMainPage = 1;
+    const itemsPerPage = 5;
+    let currentActiveNovel = null;
+    let currentVolPage = 1;
+    const volsPerPage = 5;
+
+    async function init() {
+        try {
+            const res = await fetch('./data.json');
+            allData = await res.json();
+            filteredData = allData;
+            renderMainPage(1);
+        } catch (e) { console.error("Data Load Error", e); }
+    }
+
+    function renderMainPage(page) {
+        currentMainPage = page;
+        const list = document.getElementById('itemList');
+        list.innerHTML = '';
+        const data = filteredData.slice((page-1)*itemsPerPage, page*itemsPerPage);
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'book-card';
+            card.innerHTML = `
+                <div class="book-info">
+                    <span class="book-id"># ${item.id}</span>
+                    <h2 class="book-name">${item.name}</h2>
+                    <div class="book-meta">
+                        <span class="meta-item">作者: <b>${item.author}</b></span>
+                        <span class="meta-item">格式: <b>${item.category || 'EPUB'}</b></span>
+                    </div>
+                </div>
+                <div class="book-actions">
+                    <button onclick="window.open('${item.full_url}')" class="btn btn-full">获取全集</button>
+                    <button onclick="openVolModal('${item.id}')" class="btn btn-sub">分卷查看</button>
+                </div>
+            `;
+            list.appendChild(card);
+        });
+        updatePagination('mainPagination', filteredData.length, itemsPerPage, currentMainPage, renderMainPage);
+    }
+
+    window.openVolModal = (id) => {
+        currentActiveNovel = allData.find(n => n.id === id);
+        document.getElementById('modalTitle').innerText = currentActiveNovel.name;
+        document.getElementById('modalOverlay').style.display = 'flex';
+        renderVolPage(1);
+    };
+
+    function renderVolPage(page) {
+        currentVolPage = page;
+        const list = document.getElementById('volList');
+        list.innerHTML = '';
+        const data = currentActiveNovel.volumes.slice((page-1)*volsPerPage, page*volsPerPage);
+        
+        data.forEach(v => {
+            const div = document.createElement('div');
+            div.className = 'vol-item';
+            div.onclick = () => window.open(v.url, '_blank');
+            div.innerHTML = `<span class="vol-name">${v.name}</span><span class="vol-dl">DOWNLOAD</span>`;
+            list.appendChild(div);
+        });
+        updatePagination('volPagination', currentActiveNovel.volumes.length, volsPerPage, currentVolPage, renderVolPage);
+    }
+
+    function updatePagination(id, total, per, current, callback) {
+        const el = document.getElementById(id);
+        el.innerHTML = '';
+        const pages = Math.ceil(total/per);
+        if (pages <= 1) return;
+        for (let i = 1; i <= pages; i++) {
+            const b = document.createElement('button');
+            b.innerText = i; b.className = `page-btn ${i === current ? 'active' : ''}`;
+            b.onclick = () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' }); // 翻页时平滑回到顶部
+                callback(i);
+            }; 
+            el.appendChild(b);
+        }
+    }
+
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+        const t = e.target.value.toLowerCase();
+        filteredData = allData.filter(i => i.name.toLowerCase().includes(t) || i.author.toLowerCase().includes(t));
+        renderMainPage(1);
+    });
+
+    document.getElementById('closeModal').onclick = () => document.getElementById('modalOverlay').style.display = 'none';
+    document.getElementById('modalOverlay').onclick = (e) => { if(e.target.id === 'modalOverlay') document.getElementById('modalOverlay').style.display = 'none'; }
+    
+    init();
+</script>
+</body>
+</html>
